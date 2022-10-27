@@ -36,14 +36,15 @@ enviar.addEventListener("click", function(){
     tabla.setAttribute("border", 1);
 });
 // Matriz Binaria
+let matrix = [];
 function matriuBinaria(matrix) {
     var matrix2 =[];
     for (var i = 0; i < matrix.length; i++) {
         for (var j = 0; j < matrix[0].length; j++) {
-            if(matrix2[0].style.backgroundColor == "red"){
-                matrix2[i].push(1);
-            }else{
+            if(matrix2[0].style.backgroundColor == "white"){
                 matrix2[i].push(0);
+            }else{
+                matrix2[i].push(1);
             }
         }
     }
