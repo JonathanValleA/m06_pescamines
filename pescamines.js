@@ -1,4 +1,4 @@
-// Definir Boton para hacer un evento
+//Definir Boton para hacer un evento
 let enviar = document.getElementById("inicialitzaJoc");
 // Hacer un evento de tipo click y ejecutar codigo despues (callback)
 enviar.addEventListener("click", function(){
