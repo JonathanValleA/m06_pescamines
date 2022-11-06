@@ -10,32 +10,22 @@ Necessitem:
 
 Fins ara hem estat fent servir funcions que accedien i modificaven elements. Ara necessitarem funcions per afegir nous elements al **DOM**.
 
-Consulteu les funcions [createElement](https://www.w3schools.com/jsref/met_document_createelement.asp) i [appendChild](https://www.w3schools.com/jsref/met_node_appendchild.asp)
+Consulteu les funcions [createElement](https://www.w3schools.com/jsref/met_document_createelement.asp) i [appendChild](https://www.w3schools.com/jsref/Ara ja tenim el taulell del joc. A continuació hi posarem mines.
 
+Per tal de guardar la posició de les mines farem servir una variable global anomenada mines que serà una matriu binaria amb:
 
-# Exercici 1
-Crea una funció anomenada `inicialitzaJoc` associada amb un botó; de tal manera que quan premis el botó es creï una taula amb les dimensions especificades en els inputs.
+1 a les posicions amb mines
+0 a les posicions sense mines.
+Exercici 1
+Feu una funció anomenada inicialitzaMines que l'hi passis els paràmetres:
+
+nMines: nombre de mines
+midaX: Mida de la matriu horitzontal.
+midaY: Mida de la matriu vertical
+i retorni una matriu de midaX per midaY amb tantes mines com indicades pel paràmetre nMines posades de manera aleatòria.
 
 # Exercici 2
-~~~
-function matriuBinaria(matrix) {
-    var matrix2 =[];
-    for (var i = 0; i < matrix.length; i++) {
-        for (var j = 0; j < matrix[0].length; j++) {
-        }
-    }
-    return matrix2;
-}
-~~~
+Feu que la funció inicialitzaMines es cridi quan premem el botó de començar el joc i que ompli la variable global mines.
 
-Completeu la següent funció de manera que creï una matriu binària (amb 1's i 0's) a partir de la matriu de la taula html.
-
-És a dir hem de passar de tenir una matriu d'elements html a una matriu de números on els 1 són les posicions que tenien el color "red" i 0 la resta.
-
-Experimenteu amb el mètode push dels arrays:
-~~~
-var a = [];
-a.push(3);
-// a
-// [3]
-~~~
+# Exercici 3
+Poseu un color diferent a les cel·les que continguin mines per tal de visualitzar que funcioni correctament.

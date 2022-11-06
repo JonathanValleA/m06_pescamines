@@ -1,7 +1,4 @@
-//Definir Boton para hacer un evento
-let enviar = document.getElementById("inicialitzaJoc");
-// Hacer un evento de tipo click y ejecutar codigo despues (callback)
-enviar.addEventListener("click", function(){
+function inicialitzaJoc(){
     // En caso de que haya 1 tabla, eliminamelo y creame la siguiente para no duplicarse
     if(document.getElementsByTagName("table").length != 0){
         document.getElementsByTagName("table")[0].remove();
@@ -34,19 +31,64 @@ enviar.addEventListener("click", function(){
     tabla.setAttribute("width", "30%");
     tabla.setAttribute("height", "30%");
     tabla.setAttribute("border", 1);
-});
-// Matriz Binaria
-let matrix = [];
-function matriuBinaria(matrix) {
-    var matrix2 =[];
-    for (var i = 0; i < matrix.length; i++) {
-        for (var j = 0; j < matrix[0].length; j++) {
-            if(matrix2[0].style.backgroundColor == "white"){
-                matrix2[i].push(0);
-            }else{
-                matrix2[i].push(1);
+
+};
+// Variable Global;
+
+// Funcion Pintar las minas en el tablero
+function pintarTablero(mines){
+    let rows = document.getElementsByTagName("tbody")[0].children;
+    let matrix = [];
+
+    // Recorrer toda la tabla para pintarla
+    for(var i = 0; i < rows.length; i++){
+        matrix.push(rows[i].children);
+        for(var j = 0; j < matrix[i].length; j++){ 
+            // Si en minas hay 1        
+            if(mines[i][j] == 1){
+                // pintame la matriz de rojo
+                matrix[i][j].style.backgroundColor = "red";
             }
         }
     }
-    return matrix2;
+}
+// Funcion Generar una matriz de 0 1 de forma aleatoria
+function inicialitzaMines(nMines, midaX, midaY){
+    let mines = []; // Matriz mines de 0 y 1
+    let mines2 = nMines;
+    // Crear Matriz de midaX midaY llenas de 0
+    for(var i = 0; i < midaX; i++){
+        // Crear matriz nueva
+        let nueva = [];
+        for (var j = 0; j < midaY; j++){
+            // Llenar la matriz nueva de midaX midaY de 0
+            nueva.push(0);
+        }
+        // Llenar toda la matriz nueva de 0 en la matriz mines y tener las dimension
+        // de midaX y midaY
+        mines.push(nueva);
+    }
+     // En caso de que haya minas
+    while (mines2!=0){
+        // Generar numeros aleatorios
+        let a = parseInt(Math.random()*midaX);
+        let b = parseInt(Math.random()*midaY);
+        // En caso de que no haya minas (1)
+        if (mines[a][b]!=1){
+            // Pon 1 a las minas
+            mines[a][b] = 1;}
+        mines2--;
+    }
+    
+    return mines;
+}
+// Iniciar programa Pescamines
+function inicialitza(){
+
+    inicialitzaJoc();
+    let x = document.getElementById("inputX").valueAsNumber;
+    let y = document.getElementById("inputY").valueAsNumber; 
+    let rellenarMinas = document.getElementById("minasC").valueAsNumber;
+    mines = inicialitzaMines(rellenarMinas, x,y);
+    pintarTablero(mines);
 }
