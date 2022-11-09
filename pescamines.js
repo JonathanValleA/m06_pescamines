@@ -17,8 +17,12 @@ function inicialitzaJoc(){
         for(var y = 0; y < inputY; y++){
             // Crear el elemento td
             let td = document.createElement("td");
+            // Asignamos un id al td y le damos como valor las coordenada x e y de la posición 
+            // donde este la celda 
+            td.id = x + "," + y;
             // Unir el elemento td dentro de los elementos tr que se creen
             tr.appendChild(td);
+
         }
         // Unir el elemento tr dentro del tbody 
         tbody.appendChild(tr);
@@ -31,9 +35,9 @@ function inicialitzaJoc(){
     tabla.setAttribute("width", "30%");
     tabla.setAttribute("height", "30%");
     tabla.setAttribute("border", 1);
+    tabla.setAttribute("id", "taula");
 
 };
-// Variable Global;
 
 // Funcion Pintar las minas en el tablero
 function pintarTablero(mines){
@@ -91,4 +95,24 @@ function inicialitza(){
     let rellenarMinas = document.getElementById("minasC").valueAsNumber;
     mines = inicialitzaMines(rellenarMinas, x,y);
     pintarTablero(mines);
+    coordCelda();
+}
+// Funcion Obtener coordenada de una celda
+function coordCelda() {
+    // Obtenemos el id de mi tabla
+    let celda = document.getElementById("taula");
+    // Hacemos un evento de tipo click con una funcion callback donde le pasamos un 
+    // parametro "event" y ejecutaremos esa funcion una vez que clickemos en una celda
+    celda.addEventListener("click", function(event){
+        // Obtenemos el id de la celda y en caso de que sea roja se cumplira la condicion
+        if(event.target.style.backgroundColor == "red"){
+            // Obtenemos el id de la celda
+            console.log("- La celda tiene como posicion: " + event.target.id 
+            + "\nes una mina");
+        // En caso de que no sea roja
+        }else{
+            console.log("La celda tiene como posicion: " + event.target.id 
+            + "\nno es mina");
+        }
+    });
 }
