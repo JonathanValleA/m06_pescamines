@@ -17,9 +17,10 @@ function inicialitzaJoc(){
         for(var y = 0; y < inputY; y++){
             // Crear el elemento td
             let td = document.createElement("td");
+            td.innerHTML = "&nbsp";
             // Asignamos un id al td y le damos como valor las coordenada x e y de la posición 
             // donde este la celda 
-            td.id = x + "," + y;
+            td.id = "La fila tiene como posicion " + x + " y columna " + y;
             // Unir el elemento td dentro de los elementos tr que se creen
             tr.appendChild(td);
 
@@ -41,20 +42,30 @@ function inicialitzaJoc(){
 
 // Funcion Pintar las minas en el tablero
 function pintarTablero(mines){
+    
     let rows = document.getElementsByTagName("tbody")[0].children;
     let matrix = [];
-
+    let celda = document.getElementById("taula");
     // Recorrer toda la tabla para pintarla
-    for(var i = 0; i < rows.length; i++){
-        matrix.push(rows[i].children);
-        for(var j = 0; j < matrix[i].length; j++){ 
-            // Si en minas hay 1        
-            if(mines[i][j] == 1){
-                // pintame la matriz de rojo
-                matrix[i][j].style.backgroundColor = "red";
+    celda.addEventListener("click", (e) => {
+        for(var i = 0; i < rows.length; i++){
+            matrix.push(rows[i].children);
+            for(var j = 0; j < matrix[i].length; j++){ 
+                // Si en minas hay 1        
+                if(mines[i][j] == 1){
+                    // pintame la matriz de rojo
+                    matrix[i][j].style.backgroundColor = "red";
+                }
+                // Llamar a la funcion de contar minas
+                let count = countNeighbours(i,j);
+                // En casa de que clickes en una celda
+                if(e.target.innerHTML = count){
+                    // Me mostrara el conteo de las minas
+                    matrix[i][j].innerHTML = count;
+                }
             }
         }
-    }
+    })
 }
 // Funcion Generar una matriz de 0 1 de forma aleatoria
 function inicialitzaMines(nMines, midaX, midaY){
@@ -107,12 +118,40 @@ function coordCelda() {
         // Obtenemos el id de la celda y en caso de que sea roja se cumplira la condicion
         if(event.target.style.backgroundColor == "red"){
             // Obtenemos el id de la celda
-            console.log("- La celda tiene como posicion: " + event.target.id 
-            + "\nes una mina");
+            console.log(event.target.id + "\n\ny es una bomba mortal");
         // En caso de que no sea roja
         }else{
-            console.log("La celda tiene como posicion: " + event.target.id 
-            + "\nno es mina");
+            console.log(event.target.id + "\n\ny no es una bomba mortal");
         }
     });
+}
+// Funcion para contar las Minas (No me los cuenta bien (No va))
+function countNeighbours(x,y) {
+
+    let rows = document.getElementsByTagName("tbody")[0].children;
+    let matrix = [];
+    let count = 0;
+    // Recorrer el tablero
+    for(let a = 0; a < rows.length; a++){
+        matrix.push(rows[a].children);
+        for(let b = 0; b < matrix[a].length; b++){
+            // Ver las minas que hay al rededor
+            for (let i = -1; i<= 1; i++) {
+                for (let j = -1; j<= 1; j++) {
+                    let suma1 = x+i;
+                    let suma2 = y+j;
+                    if(suma1<matrix.length && suma1>0 && suma2<matrix[suma1].length && suma2>0){
+                        // Cuando encuentre una mina me habra el conteo de las minas al rededor
+                        if(matrix[suma1][suma2].style.backgroundColor=="red"){
+                            if(suma1!=x || suma2!=y){
+                                count++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    return count;
 }
