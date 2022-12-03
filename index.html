@@ -1,29 +1,42 @@
-<html>
-    <head>
-        <link rel="stylesheet" href="css/style.css">
-    </head>
-    <body>
-        <h1>Tablero de Minas</h1>
-        <!--Dimensiones -->
-        <div class="container">
-            <div>
-                <label for="">Dimension X: </label>
-                <input type="number" id="inputX" placeholder="Dimension x">
-            </div>
-            <div>
-                <label for="">Dimension Y: </label>
-                <input type="number" id="inputY" placeholder="Dimension Y">
-            </div>
-            <div>
-                <label for="">Bombas Mortales: </label>
-                <input type="number" id="minasC" placeholder="Minas">
-            </div>
-            <div class="button">
-                <button style="margin-bottom: 30px" type="button" onclick="inicialitzaJoc()">Inicialitzar</button>
-                <button onclick="inicialitza()">Bombas en el Tablero</button>
-            </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <h2><time>00:00:00</time></h2>
+    <h1>Tablero de Minas</h1>
+    <!--Dimensiones -->
+    <div class="container">
+        <div>
+            <label for="">Dimension X: </label>
+            <input type="number" id="inputX" placeholder="Dimension x">
         </div>
-        <br>
-    </body>
+        <div>
+            <label for="">Dimension Y: </label>
+            <input type="number" id="inputY" placeholder="Dimension Y">
+        </div>
+        <div>
+            <label for="">Bombas Mortales: </label>
+            <input type="number" id="minasC" placeholder="Minas">
+        </div>
+        <div class="button">
+            <button style="margin-bottom: 30px; display: none;" type="button" onclick="inicialitzaJoc()">Inicialitzar</button>
+            <button onclick="inicialitza()">Bombas en el Tablero</button>
+            <button onclick="del()">Borrar Tablero</button>
+        </div>
+    </div>
+    <br>
+    <div class="contenedor-juego hidden">
+        <h3>Banderas colocadas: <span id="num-banderas"></span> ( faltan <span id="banderas-restantes"></span> )</h3>
+    </div>
+    <div id="taulaP"></div>
+    <div class="resultado-juego"></div>
+
     <script src="pescamines.js"></script>
+</body>
 </html>

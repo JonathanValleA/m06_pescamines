@@ -1,15 +1,64 @@
+// Variables GLOBALES
+let width = 10;  
+let numBanderas = 0;        // => Número de banderas marcadas
+let casillas = [];          // => Array con las casillas
+let finPartida = false;     // => Marca de si se ha picado en una bomba
+const resultado = document.querySelector('.resultado-juego');
+
+const contadorBanderas = document.getElementById('num-banderas');
+const contadorBanderasRestantes = document.getElementById('banderas-restantes');
+let rellenarMinas = document.getElementById("minasC").valueAsNumber;
+
+// Contador de Tiempo del Buscaminas
+let h2 = document.getElementsByTagName("h2")[0];
+let sec = 0;
+let min = 0;
+let hrs = 0;
+let t;
+
+// Funcion para incrementar el tiempo y resetarlo
+function tick(){
+    sec++;
+    if(sec >= 60){
+        sec = 0;
+        min++;
+        if(min >= 60){
+            min = 0;
+            hrs++;
+        }
+    }
+}
+// Agregar el contador
+function add(){
+    tick();
+    h2.textContent = (hrs > 9 ? hrs : "0" + hrs)
+            + ":" + (min > 9 ? min : "0" + min)
+            + ":" + (sec > 9 ? sec : "0" + sec)
+}
+
 function inicialitzaJoc(){
+    const contenedorJuego = document.querySelector('.contenedor-juego');
+
+    if (contenedorJuego.classList.contains('hidden')) {
+        // Si tiene la clase 'hidden' es porque no hay ningún juego
+        contenedorJuego.classList.remove('hidden');
+    }
     // En caso de que haya 1 tabla, eliminamelo y creame la siguiente para no duplicarse
     if(document.getElementsByTagName("table").length != 0){
         document.getElementsByTagName("table")[0].remove();
+        finPartida = false;
+        resultado.innerHTML = '';
+        resultado.classList.remove("back-red");
     }
     // Definir estructura table y tbody y empezar tabla desde el body
-    const contenedor = document.getElementsByTagName("body")[0];
+    let div = document.getElementById("taulaP");
     const tabla = document.createElement("table");
     let tbody = document.createElement("tbody");
     // Llamar a los 2 inputs de tipo numero
     let inputX = document.getElementById("inputX").valueAsNumber;
     let inputY = document.getElementById("inputY").valueAsNumber;
+
+
     // Empezar a crear la tabla con las dimensiones que pasare
     for(var x = 0; x < inputX; x++){
         // Crear el elemento tr 
@@ -17,12 +66,39 @@ function inicialitzaJoc(){
         for(var y = 0; y < inputY; y++){
             // Crear el elemento td
             let td = document.createElement("td");
+            td.width = 50;
+            td.height = 50;
             td.innerHTML = "&nbsp";
             // Asignamos un id al td y le damos como valor las coordenada x e y de la posición 
             // donde este la celda 
-            td.id = "La fila tiene como posicion " + x + " y columna " + y;
+            td.id = x + "," + y;
+            casillas.push(td);
             // Unir el elemento td dentro de los elementos tr que se creen
             tr.appendChild(td);
+            // Añadimos función al hacer click
+            td.addEventListener('click', (event) => {
+                
+                click(event.target);
+                if(event.target.style.backgroundColor == "red"){
+                    // Si clicas una mina, se termina la partida
+                    finPartida = true;
+                    // Se escribe por pantalla un mensaje de que has perdido
+                    resultado.textContent = 'Lo siento, PERDISTE!!!';
+                    resultado.classList.add('back-red');
+                }
+            });
+
+            // Añadimos función al hacer click derecho
+            td.oncontextmenu = function(event) {
+                event.preventDefault();
+                anadirBandera(td);
+                actualizaNumBanderas();
+            }
+            
+            // Añadimos función al hacer doble-click
+            td.addEventListener('dblclick', () => {
+                dobleClick(event.target);
+            });
 
         }
         // Unir el elemento tr dentro del tbody 
@@ -31,42 +107,133 @@ function inicialitzaJoc(){
     // Y unir todo el elemento tbody con sus hijos dentro del elemento tabla para crear la tabla
     tabla.appendChild(tbody);
     //Unir toda la tabla dentro del contenedor que seria el body
-    contenedor.appendChild(tabla);
+    div.appendChild(tabla);
     // Definir estilos a la tabla
-    tabla.setAttribute("width", "30%");
-    tabla.setAttribute("height", "30%");
     tabla.setAttribute("border", 1);
     tabla.setAttribute("id", "taula");
 
 };
 
+function revelarCasillas(td) {
+    const idCasilla = parseInt(td.id);
+    const estaBordeIzq = (idCasilla % width === 0);             // => Casilla está en el borde izq
+    const estaBordeDech = (idCasilla % width === width - 1);    // => Casilla está en el borde dech
+
+    setTimeout(() => {
+        // Simulamos clik en la casilla anterior
+        if (idCasilla > 0 && !estaBordeIzq) click(casillas[idCasilla-1]);
+                    
+        // Simulamos clik en la casilla siguiente
+        if (idCasilla < (width*width-2) && !estaBordeDech) click(casillas[idCasilla+1]);
+
+        // Simulamos clik en la casilla superior
+        if (idCasilla >= width) click(casillas[idCasilla-width]);
+        
+        // Simulamos clik en la casilla siguiente de la fila anterior
+        if (idCasilla > (width-1) && !estaBordeDech) click(casillas[idCasilla+1-width]);
+        
+        // Simulamos clik en la casilla anterior de la fila anterior
+        if (idCasilla > (width+1) && !estaBordeIzq) click(casillas[idCasilla-1-width]);
+
+        // Simulamos clik en la casilla inferior
+        if (idCasilla < (width*(width-1))) click(casillas[idCasilla+width]);
+
+        // Simulamos clik en la casilla siguiente de la fila siguiente
+        if (idCasilla < (width*width-width-2) && !estaBordeDech) click(casillas[idCasilla+1+width]);
+        
+        // Simulamos clik en la casilla anterior de la fila siguiente
+        if (idCasilla < (width*width-width) && !estaBordeIzq) click(casillas[idCasilla-1+width]);
+
+    }, 10);
+}
+
+function click(td) {
+    // Comprobamos si la casilla no es clickeable
+    if (td.classList.contains('marcada') || td.classList.contains('bandera') || finPartida) return;
+
+    if (td.classList.contains('bomba')) {
+        // Casilla bomba
+        bomba(casilla);
+    } else {
+        let total = td.getAttribute('data');
+        if (total != 0) {
+            // Casilla con bombas cerca
+            td.classList.add('marcada');
+            td.innerHTML = total;
+            return;
+        }
+        td.classList.add('marcada');
+            
+        // Casilla sin bombas cerca
+        revelarCasillas(td);
+
+    }
+}
+function dobleClick(td) {
+    // Comprobamos si la casilla no es clickeable
+    if (!td.classList.contains('marcada') || finPartida) return;
+
+    revelarCasillas(td);
+}
+// Funcion para borrar el Tablero
+function del(){
+    const contenedorJuego = document.querySelector('.contenedor-juego');
+
+    if (!(contenedorJuego.classList.contains('hidden'))) {
+        // Si tiene la clase 'hidden' es porque no hay ningún juego
+        contenedorJuego.classList.add('hidden');
+        finPartida = false;
+        resultado.innerHTML = '';
+        resultado.classList.remove("back-red");
+    }
+    if(document.getElementsByTagName("table").length != 0){
+        document.getElementsByTagName("table")[0].remove();
+    }
+}
 // Funcion Pintar las minas en el tablero
 function pintarTablero(mines){
-    
+    t = setInterval(add, 1000);
+
     let rows = document.getElementsByTagName("tbody")[0].children;
     let matrix = [];
-    let celda = document.getElementById("taula");
+    let tabla = document.getElementById("tabla");
     // Recorrer toda la tabla para pintarla
-    celda.addEventListener("click", (e) => {
-        for(var i = 0; i < rows.length; i++){
-            matrix.push(rows[i].children);
-            for(var j = 0; j < matrix[i].length; j++){ 
-                // Si en minas hay 1        
-                if(mines[i][j] == 1){
-                    // pintame la matriz de rojo
-                    matrix[i][j].style.backgroundColor = "red";
-                }
-                // Llamar a la funcion de contar minas
-                let count = countNeighbours(i,j);
-                // En casa de que clickes en una celda
-                if(e.target.innerHTML = count){
-                    // Me mostrara el conteo de las minas
-                    matrix[i][j].innerHTML = count;
-                }
+    for(var i = 0; i < rows.length; i++){
+        matrix.push(rows[i].children);
+        for(var j = 0; j < matrix[i].length; j++){ 
+            // Si en minas hay 1        
+            if(mines[i][j] == 1){
+                // pintame la matriz de rojo
+                matrix[i][j].style.backgroundColor = "red";
             }
+            let count = countNeighbours(i,j);
+            matrix[i][j].innerHTML = count;
         }
-    })
+    }
 }
+
+function anadirBandera(td) {
+    if (finPartida) return;
+
+    if (!td.classList.contains('marcada') && numBanderas < rellenarMinas) {
+        if (!td.classList.contains('bandera')) {
+            td.classList.add('bandera');
+            td.innerHTML = '🚩';
+            numBanderas++;
+            actualizaNumBanderas();
+
+        } else {
+            td.classList.remove('bandera');
+            td.innerHTML = '';
+            numBanderas--;
+        }
+    }
+}
+function actualizaNumBanderas() {
+    contadorBanderas.textContent = numBanderas;
+    contadorBanderasRestantes.textContent = (rellenarMinas - numBanderas);
+}
+
 // Funcion Generar una matriz de 0 1 de forma aleatoria
 function inicialitzaMines(nMines, midaX, midaY){
     let mines = []; // Matriz mines de 0 y 1
@@ -97,17 +264,6 @@ function inicialitzaMines(nMines, midaX, midaY){
     
     return mines;
 }
-// Iniciar programa Pescamines
-function inicialitza(){
-
-    inicialitzaJoc();
-    let x = document.getElementById("inputX").valueAsNumber;
-    let y = document.getElementById("inputY").valueAsNumber; 
-    let rellenarMinas = document.getElementById("minasC").valueAsNumber;
-    mines = inicialitzaMines(rellenarMinas, x,y);
-    pintarTablero(mines);
-    coordCelda();
-}
 // Funcion Obtener coordenada de una celda
 function coordCelda() {
     // Obtenemos el id de mi tabla
@@ -118,13 +274,28 @@ function coordCelda() {
         // Obtenemos el id de la celda y en caso de que sea roja se cumplira la condicion
         if(event.target.style.backgroundColor == "red"){
             // Obtenemos el id de la celda
-            console.log(event.target.id + "\n\ny es una bomba mortal");
+            console.log("La fila y la columna tiene como posición " + event.target.id + "\n\ny es una bomba mortal");
         // En caso de que no sea roja
         }else{
-            console.log(event.target.id + "\n\ny no es una bomba mortal");
+            console.log("La fila y la columna tiene como posición " + event.target.id + "\n\ny no es una bomba mortal");
         }
     });
 }
+
+// Iniciar programa Pescamines
+function inicialitza(){
+
+    inicialitzaJoc();
+    let x = document.getElementById("inputX").valueAsNumber;
+    let y = document.getElementById("inputY").valueAsNumber; 
+    let rellenarMinas = document.getElementById("minasC").valueAsNumber;
+    let mines = inicialitzaMines(rellenarMinas, x,y);
+
+    pintarTablero(mines);
+    coordCelda();
+    actualizaNumBanderas();
+}
+
 // Funcion para contar las Minas (No me los cuenta bien (No va))
 function countNeighbours(x,y) {
 
