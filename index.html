@@ -12,30 +12,53 @@
     <h1>Tablero de Minas</h1>
     <!--Dimensiones -->
     <div class="container">
-        <div>
-            <label for="">Dimension X: </label>
-            <input type="number" id="inputX" placeholder="Dimension x">
-        </div>
-        <div>
-            <label for="">Dimension Y: </label>
-            <input type="number" id="inputY" placeholder="Dimension Y">
-        </div>
-        <div>
-            <label for="">Bombas Mortales: </label>
-            <input type="number" id="minasC" placeholder="Minas">
-        </div>
-        <div class="button">
-            <button style="margin-bottom: 30px; display: none;" type="button" onclick="inicialitzaJoc()">Inicialitzar</button>
-            <button onclick="inicialitza()">Bombas en el Tablero</button>
-            <button onclick="del()">Borrar Tablero</button>
+        <form action="">
+            <div>
+                <label for="">Dimension X: </label>
+                <input type="number" id="inputX" placeholder="Dimension x">
+            </div>
+            <div>
+                <label for="">Dimension Y: </label>
+                <input type="number" id="inputY" placeholder="Dimension Y">
+            </div>
+            <div>
+                <label for="">Bombas Mortales: </label>
+                <input type="number" id="minasC" placeholder="Minas">
+            </div>
+        </form> 
+        <div class="botones">
+            <button onclick="inicialitza()">Bombas Mortales</button>
+            <button onclick="del()">Limpiar Tablero</button>
+            <select id="midataula" onchange="midaTaula()">
+                <option value="none" selected disabled hidden>Selecione Tablero</option>
+                <option value="1">9x9, 10mines</option>
+                <option value="2">9x9, 35mines</option>
+                <option value="3">16x16, 99mines</option>
+                <option value="4">30x16, 99mines</option>
+                <option value="5">30x16, 170mines</option>
+            </select>
         </div>
     </div>
     <br>
+    <div id="puntuarG" class="puntuarG">Puntuación: <span id="punts">0</span></div>
     <div class="contenedor-juego hidden">
         <h3>Banderas colocadas: <span id="num-banderas"></span> ( faltan <span id="banderas-restantes"></span> )</h3>
     </div>
-    <div id="taulaP"></div>
+    <div id="tablero"></div>
     <div class="resultado-juego"></div>
+    <p id="registrar" style="width:25%; margin: auto; font-weight: bold; margin: 20px auto;">Datos Registrados: </p>
+    <table id="datos" style="margin: 20px auto;">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Puntuación</th>
+                <th>Tiempo</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        </tbody>
+    </table>
 
     <script src="pescamines.js"></script>
 </body>
