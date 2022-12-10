@@ -208,7 +208,6 @@ function destaparCasilla(fila, columna){
             puntuarG.innerText = punts; // Y actualizamos la puntuación
             // En caso de que no haya ninguna bandera
             if(!td.classList.contains("🚩")){
-            if(!td.classList.contains("icon-bandera")){
 
                 td.classList.add("destapado");
                  //ponemos en la casilla el número de minas que tiene alrededor
@@ -366,7 +365,6 @@ function midaTaula(){
     // Llamar a las funciones ya definidas para que funcione la tabla
     inicialitzaJoc(inputX, inputY)
     //pintarTablero(mines); // Para visualizar de una forma mejor las minas
-    inicialitzaJoc(inputX, inputY);
     coordCelda();
     contarMinas();
     actualizaNumBanderas(rellenarMinas);
@@ -471,7 +469,7 @@ function inicialitzaMines(nMines, midaX, midaY){
         }
         // Llenar toda la matriz nueva de 0 en la matriz mines y tener las dimension
         // de midaX y midaY
-        matrix.push(nueva);
+        mines.push(nueva);
     }
      // En caso de que haya minas
     while (mines2!=0){
@@ -479,16 +477,14 @@ function inicialitzaMines(nMines, midaX, midaY){
         let a = parseInt(Math.random()*midaX);
         let b = parseInt(Math.random()*midaY);
         // En caso de que no haya minas (1)
-        if (matrix[a][b]!=1){
+        if (mines[a][b]!=1){
             // Pon 1 a las minas
             mines[a][b] = 1;
-            matrix[a][b] = 1;
             mines2--;
         }
     }
     // Retornamos la matriz con las minas 1
     return mines;
-    return matrix;
 }
 
 // FUNCION PARA OBTENER COORDENADAS DE UNA CELDA
