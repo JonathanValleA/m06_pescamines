@@ -207,7 +207,7 @@ function destaparCasilla(fila, columna){
             punts += 10;
             puntuarG.innerText = punts; // Y actualizamos la puntuación
             // En caso de que no haya ninguna bandera
-            if(!td.classList.contains("icon-bandera")){
+            if(!td.classList.contains("🚩")){
 
                 td.classList.add("destapado");
                  //ponemos en la casilla el número de minas que tiene alrededor
@@ -237,6 +237,7 @@ function destaparCasilla(fila, columna){
                     td.classList.add("destapado");
                     td.style.backgroundColor = "red"; // Aplicar un fondo a la celda
                     // Cuando clickes en una bomba, se muestra un mensaje y se termina la partida
+                    resultado.style.display = "block";
                     resultado.innerHTML = "Lo siento, has perdido";
                     resultado.classList.add("perder");
                     finPartida = true; // Indicamos true a la variable finPartida para terminar la partida
@@ -362,7 +363,8 @@ function midaTaula(){
         t = setInterval(add, 1000);
     }
     // Llamar a las funciones ya definidas para que funcione la tabla
-    inicialitzaJoc(inputX, inputY);
+    inicialitzaJoc(inputX, inputY)
+    //pintarTablero(mines); // Para visualizar de una forma mejor las minas
     coordCelda();
     contarMinas();
     actualizaNumBanderas(rellenarMinas);
@@ -376,6 +378,7 @@ function midaTaula(){
 function del(){
     // Reseteamos los puntos
     punts = 0;
+    resultado.style.display = "none";
     puntuarG.innerText = punts;
     const contenedorJuego = document.querySelector('.contenedor-juego');
     if (!(contenedorJuego.classList.contains('hidden'))) {
@@ -436,6 +439,7 @@ function anadirBandera(td, rellenarMinas) {
             puntuarG.innerText = puntuacion; // Escribimos la puntuacion final
             let time = hrs + "h " + min + "m " + sec + "s"; // El tiempo que se ha tardado
             // Indicamos de que hemos ganado
+            resultado.style.display = "block";
             resultado.innerHTML = "Felicidades, has ganado";
             resultado.classList.add("ganar");
             let usuario = prompt("Felicidades has ganado, Ingrese un usuario a guardar: ");
@@ -453,6 +457,7 @@ function actualizaNumBanderas(rellenarMinas) {
 
 // FUNCION PARA GENERAR UNA MATRIZ DE 0 1 DE FORMA ALEATORIA
 function inicialitzaMines(nMines, midaX, midaY){
+    let mines = [];
     let mines2 = nMines;
     // Crear Matriz de midaX midaY llenas de 0
     for(var i = 0; i < midaX; i++){
@@ -464,7 +469,7 @@ function inicialitzaMines(nMines, midaX, midaY){
         }
         // Llenar toda la matriz nueva de 0 en la matriz mines y tener las dimension
         // de midaX y midaY
-        matrix.push(nueva);
+        mines.push(nueva);
     }
      // En caso de que haya minas
     while (mines2!=0){
@@ -472,14 +477,14 @@ function inicialitzaMines(nMines, midaX, midaY){
         let a = parseInt(Math.random()*midaX);
         let b = parseInt(Math.random()*midaY);
         // En caso de que no haya minas (1)
-        if (matrix[a][b]!=1){
+        if (mines[a][b]!=1){
             // Pon 1 a las minas
-            matrix[a][b] = 1;
+            mines[a][b] = 1;
             mines2--;
         }
     }
     // Retornamos la matriz con las minas 1
-    return matrix;
+    return mines;
 }
 
 // FUNCION PARA OBTENER COORDENADAS DE UNA CELDA
@@ -503,6 +508,7 @@ function coordCelda() {
 // INICIAR PROGRAMA PESCAMINES
 function inicialitza(){
     registrar.style.display = "none";
+    resultado.style.display = "none";
     if(!running){
         t = setInterval(add, 1000);
     }
@@ -517,6 +523,7 @@ function inicialitza(){
     rellenarMinas = document.getElementById("minasC").valueAsNumber;
     mines = inicialitzaMines(rellenarMinas, inputX, inputY);
     inicialitzaJoc(inputX, inputY);
+    //pintarTablero(mines); // Para visualizar de una forma mejor las minas
     coordCelda();
     contarMinas();
     actualizaNumBanderas(rellenarMinas);
